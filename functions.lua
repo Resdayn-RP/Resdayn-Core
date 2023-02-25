@@ -80,4 +80,25 @@ function functions.removeMoney(dbid, amount)
     end
 end
 
+---@param dbid integer
+---@return integer player.money
+function functions.getBalance(dbid)
+    local playerTable = HebiDB.table
+    for _, table in pairs(playerTable) do
+        for _, player in pairs(table) do
+            if player.dbid == dbid then
+                return player.money
+            end
+        end
+    end
+end
+
+---@param pid integer
+---@param id integer
+---@param message string
+function functions.SendMessage(pid, id, message)
+    tes3mp.CustomMessageBox(pid, id, message)
+end
+
+
 return functions

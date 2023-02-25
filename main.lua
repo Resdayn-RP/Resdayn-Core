@@ -27,6 +27,17 @@ function core.onDisconnect(eventStatus, pid)
     HebiDB:writeTable()
 end
 
+---@param pid integer
+function core.moneyCommand(pid)
+    local dbID = core.functions.getDbID(Players[pid].name)
+    if not dbID then tes3mp.SendMessage(pid, "Can't find balance", false) return end
+    local balance = core.functions.getBalance(dbID)
+    local message = "Your balance is " .. tostring(balance) .. " septims"
+    tes3mp.SendMessage(pid, message, false)
+end
+
+customCommandHooks.registerCommand("cash", core.moneyCommand)
+
 customEventHooks.registerHandler("OnPlayerFinishLogin", core.onLogin)
 customEventHooks.registerHandler("OnPlayerDisconnect", core.onDisconnect)
 
