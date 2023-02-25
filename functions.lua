@@ -9,13 +9,13 @@ function functions.log(message)
 end
 
 ---@param pid integer
----@return table playerCoords
+---@return Table playerCoords
 function functions.getPlayerCoords(pid)
     return {x = tes3mp.GetPosX(pid), y = tes3mp.GetPosY(pid), z = tes3mp.GetPosZ(pid)}
 end
 
----@param pos1 table
----@param pos2 table
+---@param pos1 Table
+---@param pos2 Table
 ---@return integer displacement
 function functions.getDistanceBetweenCoords(pos1, pos2)
     return math.sqrt((pos1.x - pos2.x)^2 + (pos1.y - pos2.y)^2 + (pos1.z - pos2.z)^2)
@@ -34,8 +34,8 @@ end
 ---@return boolean isUnique
 function functions.checkForUniqueID(id)
     local playerTable = HebiDB:getTable()
-    for _, table in pairs(playerTable) do
-        for _, player in pairs(table) do
+    for _, Table in pairs(playerTable) do
+        for _, player in pairs(Table) do
             if player.dbid == id then return false end
         end
     end
@@ -46,8 +46,8 @@ end
 ---@return integer|nil dbid
 function functions.getDbID(name)
     local playerTable = HebiDB:getTable()
-    for _, table in pairs(playerTable) do
-        for _, player in pairs(table) do
+    for _, Table in pairs(playerTable) do
+        for _, player in pairs(Table) do
             if player.name == name then return player.dbid end
         end
     end
@@ -57,9 +57,9 @@ end
 ---@param dbid integer
 ---@param amount integer
 function functions.addMoney(dbid, amount)
-    local playerTable = HebiDB.table
-    for _, table in pairs(playerTable) do
-        for _, player in pairs(table) do
+    local playerTable = HebiDB.Table
+    for _, Table in pairs(playerTable) do
+        for _, player in pairs(Table) do
             if player.dbid == dbid then
                 player.money = player.money + amount
             end
@@ -70,9 +70,9 @@ end
 ---@param dbid integer
 ---@param amount integer
 function functions.removeMoney(dbid, amount)
-    local playerTable = HebiDB.table
-    for _, table in pairs(playerTable) do
-        for _, player in pairs(table) do
+    local playerTable = HebiDB.Table
+    for _, Table in pairs(playerTable) do
+        for _, player in pairs(Table) do
             if player.dbid == dbid then
                 player.money = player.money - amount
             end
@@ -83,9 +83,9 @@ end
 ---@param dbid integer
 ---@return integer player.money
 function functions.getBalance(dbid)
-    local playerTable = HebiDB.table
-    for _, table in pairs(playerTable) do
-        for _, player in pairs(table) do
+    local playerTable = HebiDB.Table
+    for _, Table in pairs(playerTable) do
+        for _, player in pairs(Table) do
             if player.dbid == dbid then
                 return player.money
             end
