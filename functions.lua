@@ -9,13 +9,13 @@ function functions.log(message)
 end
 
 ---@param pid integer
----@return Table playerCoords
+---@return table playerCoords
 function functions.getPlayerCoords(pid)
     return {x = tes3mp.GetPosX(pid), y = tes3mp.GetPosY(pid), z = tes3mp.GetPosZ(pid)}
 end
 
----@param pos1 Table
----@param pos2 Table
+---@param pos1 table
+---@param pos2 table
 ---@return integer displacement
 function functions.getDistanceBetweenCoords(pos1, pos2)
     return math.sqrt((pos1.x - pos2.x)^2 + (pos1.y - pos2.y)^2 + (pos1.z - pos2.z)^2)
@@ -52,7 +52,7 @@ function functions.getDbID(name)
         end
     end
     return nil
-end
+end     
 
 ---@param dbid integer
 ---@param amount integer
@@ -100,5 +100,27 @@ function functions.SendMessage(pid, id, message)
     tes3mp.CustomMessageBox(pid, id, message)
 end
 
+---@param eventStatus table
+---@param pid integer
+---@param cellDescription integer
+---@param objects table
+function functions.disableTradersTrainers(eventStatus, pid, cellDescription, objects)
+    if not (Players[pid] or Players[pid]:IsLoggedIn()) then return end
+    
+    local ObjectIndex
+    local ObjectRefid
+    local ObjectDialogue 
+
+    for _, object in pairs(objects) do
+        ObjectIndex = object.uniqueIndex
+        ObjectRefid = object.refId
+        ObjectDialogue = object.dialogueChoiceType
+    end
+        
+    if not (ObjectIndex and ObjectRefid) then return end
+    if ObjectDialogue ~= 8 and ObjectDialogue ~= 3 then return end
+
+    return customEventHooks.makeEventStatus(false, false)
+end
 
 return functions
