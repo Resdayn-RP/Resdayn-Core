@@ -38,6 +38,8 @@ end
 
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 
+customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
+
 customEventHooks.registerHandler("OnPlayerFinishLogin", core.onLogin)
 customEventHooks.registerHandler("OnPlayerDisconnect", core.onDisconnect)
 
