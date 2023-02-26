@@ -123,4 +123,39 @@ function functions.disableTradersTrainers(eventStatus, pid, cellDescription, obj
     return customEventHooks.makeEventStatus(false, false)
 end
 
+---@param eventStatus table
+---@param playerPacket table
+---@return boolean didChange
+function functions.checkForSpellStackingChanges(eventStatus, playerPacket)
+    local didChange = false
+    
+    if eventStatus.validDefaultHandler then return false end
+
+    for spellId, spellInstances in pairs(playerPacket.spellsActive) do
+        for key, spellInstance in ipairs(spellInstances) do
+            if spellInstance.stackingState then
+                playerPacket.spellsActive[spellId][key].stackingState = false
+                didChange = true
+            end
+        end
+    end
+
+    return didChange
+end
+
+---@param eventStatus table
+---@param pid integer
+---@param playerPacket table
+function functions.disableDuplicateMagicEffects(eventStatus, pid, playerPacket)
+    local didChange = functions.checkForSpellStackingChanges(eventStatus, playerPacket) 
+
+    if not didChange then return customEventHooks.makeEventStatus(nil, nil) end
+
+    Players[pid]:SaveSpellsActive(playerPacket)
+    Players[pid]:LoadSpellsActive()
+
+    return customEventHooks.makeEventStatus(false, nil)
+end
+
+
 return functions

@@ -39,6 +39,7 @@ end
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
+customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)
 
 customEventHooks.registerHandler("OnPlayerFinishLogin", core.onLogin)
 customEventHooks.registerHandler("OnPlayerDisconnect", core.onDisconnect)
