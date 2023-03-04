@@ -157,5 +157,64 @@ function functions.disableDuplicateMagicEffects(eventStatus, pid, playerPacket)
     return customEventHooks.makeEventStatus(false, nil)
 end
 
+---@param player string
+---@param refId string item reference id
+---@return boolean hasPick
+function functions.itemCheck(player, refId)
+    if not inventoryHelper.getItemIndex(player.data.inventory, refId, -1) then
+        return false
+    end
+    return true
+end
+
+---@param player table
+---@param refId string
+---@param amount integer
+function functions.addItem(player, refId, amount)
+    inventoryHelper.addItem(player.data.inventory, refId, amount, -1, -1, "")
+    player:LoadInventory()
+    player:LoadEquipment()
+    player:QuicksaveToDrive()
+end
+
+---@param name string
+---@param magnitude integer size of burden
+function functions.createBurdenSpell(name, magnitude)
+    local recordStore = RecordStores["spell"]
+    recordStore.data.permanentRecords["burden_enable"] = {
+		name = name,
+		subtype = 1,
+		cost = 0,
+		flags = 0,
+		effects = {
+			{
+				attribute = -1,
+				area = 0,
+				duration = 10,
+				id = 7,
+				rangeType = 0,
+				skill = -1,
+				magnitudeMin = magnitude,
+				magnitudeMax = magnitude
+			}
+		}
+	}
+	recordStore:Save()
+end
+
+---@param pid integer PlayerID
+function functions.updatePlayerSpellbook(pid)
+    Players[pid]:LoadSpellbook()
+end
+
+---@param pid integer PlayerID
+---@param id string Spell ID
+---@param action integer Add/Remove
+function functions.sendSpell(pid, id, action)
+    tes3mp.ClearSpellbookChanges(pid)
+    tes3mp.SetSpellbookChangesAction(pid, action)
+    tes3mp.AddSpell(pid, id)
+    tes3mp.SendSpellbookChanges(pid)
+end
 
 return functions
