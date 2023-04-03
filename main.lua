@@ -82,6 +82,8 @@ function core.onPlayerDeath(eventStatus, pid)
     core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.REMOVE)
 end
 
+---@param source integer Source player ID
+---@param target integer Target player ID
 function core.reviveCommand(source, target)
     local sDbId = core.functions.getDbID(Players[source].name)
     local tDbId = core.functions.getDbID(Players[target].name)

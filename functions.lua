@@ -29,6 +29,22 @@ function functions.getDistanceBetweenCoords(pos1, pos2)
     return math.sqrt((pos1.x - pos2.x)^2 + (pos1.y - pos2.y)^2 + (pos1.z - pos2.z)^2)
 end
 
+---@param source integer Source Player ID
+---@return integer closestPid closest player's ID
+function functions.getClosestPlayer(source)
+    local sourceCoords = functions.getPlayerCoords(source)
+    local closestPid, closestCoords
+    for pid in pairs(Players) do
+        if pid ~= source then
+            closestCoords = functions.getPlayerCoords(pid)
+            if functions.getDistanceBetweenCoords(sourceCoords, pid) < closestCoords or not closestCoords then
+                closestPid = pid
+            end
+        end
+    end
+    return closestPid
+end
+
 ---@return integer
 function functions.generateDbID()
     local id = math.random(0, 999)
