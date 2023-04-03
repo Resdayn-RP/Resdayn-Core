@@ -36,7 +36,29 @@ function core.moneyCommand(pid)
     tes3mp.SendMessage(pid, message, false)
 end
 
+
+---@param source integer Player ID
+---@param target integer Target Player ID
+---@param amount number Amount of money to transfer
+function core.giveMoney(source, target, amount)
+    local sourceDbId, targetDbId = core.functions.getDbId(Players[source].name), core.functions(Players[target].name)
+    if not (sourceDbId or targetDbId) then
+        tes3mp.SendMessage(source, "Can't find players.", false)
+        return
+    end
+    
+    local sCoords, tCoords = core.functions.getPlayerCoords(source), core.functions.getPlayerCoords(target)
+    if core.functions.getDistanceBetweenCoords(sCoords, tCoords) < 10 then
+        tes3mp.SendMessage(source, "Too far from target player.", false)
+        return
+    end
+
+    core.functions.removeMoney(source, amount)
+    core.functions.addMoney(target, amount)
+end
+
 customCommandHooks.registerCommand("cash", core.moneyCommand)
+customCommandHooks.registerCommand("givemoney", core.giveMoney)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
 customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)
