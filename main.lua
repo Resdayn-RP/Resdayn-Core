@@ -58,6 +58,11 @@ function core.giveMoney(source, target, amount)
     core.functions.addMoney(target, amount)
 end
 
+function core.deathEventValidator(eventStatus, pid)
+    eventStatus.validDefaultHandler = false
+    return eventStatus
+end
+
 --- Death Handler - We want a basic medical system. Keep Player in Place Until Revive.
 ---@param eventStatus table
 ---@param pid integer Player ID
@@ -68,24 +73,47 @@ function core.onPlayerDeath(eventStatus, pid)
     core.isDead[pid] = true
     core.functions.changeDeathStatus(dbId)
     
-    ResdaynCore.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.ADD)
+    core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.ADD)
     repeat
         core.functions.wait(0)
-    until not core.isDead[pid] or not core.functions.coolDown(pid, 30)
-    ResdaynCore.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.REMOVE)
+    until not (core.isDead[pid] or core.functions.coolDown(pid, 30))
+    core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.REMOVE)
+end
+
+function core.reviveCommand(source, target)
+    local sDbId = core.functions.getDbID(Players[source].name)
+    local tDbId = core.functions.getDbID(Players[target].name)
+    if not (sDbId or tDbId) then
+        tes3mp.SendMessage(source, "Could not find player(s).", false)
+        return
+    end
+
+    if not core.functions.checkMedicStatus(sDbId) then
+        tes3mp.SendMessage(source, "You are not a medic.", false)
+        return
+    end
+
+    tes3mp.SendMessage(source, "Reviving Player", false)
+    core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.ADD)
+    core.functions.wait(10)
+    core.functions.changeDeathStatus(tDbId)
+    core.isDead[target] = not core.isDead[target]
+    core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.REMOVE)
 end
 
 function core.OnServerPostInit()
-    ResdaynCore.functions.createBurdenSpell("Dead", 900)
+    core.functions.createBurdenSpell("Dead", 900)
 end
 
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 customCommandHooks.registerCommand("givemoney", core.giveMoney)
+customCommandHooks.registerCommand("revive", core.reviveCommand)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
 customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)
-customEventHooks.registerValidator("OnPlayerDeath", core.onPlayerDeath)
+customEventHooks.registerValidator("OnPlayerDeath", core.deathEventValidator)
 
+customEventHooks.registerHandler("OnPlayerDeath", core.onPlayerDeath)
 customEventHooks.registerHandler("OnServerPostInit", core.OnServerPostInit)
 customEventHooks.registerHandler("OnPlayerFinishLogin", core.onLogin)
 customEventHooks.registerHandler("OnPlayerDisconnect", core.onDisconnect)
