@@ -10,6 +10,8 @@ function core.setupNewPlayer(pid)
     local player = core.tableConfig['players']
     player.dbid = core.functions.generateDbID()
     player.money = 500
+    player.isDead = false
+    player.isMedic = false
     player.name = Players[pid].name
     HebiDB:insertToTable('players', { player })
 end
@@ -83,6 +85,7 @@ end
 function core.reviveCommand(source, target)
     local sDbId = core.functions.getDbID(Players[source].name)
     local tDbId = core.functions.getDbID(Players[target].name)
+    
     if not (sDbId or tDbId) then
         tes3mp.SendMessage(source, "Could not find player(s).", false)
         return
@@ -94,11 +97,11 @@ function core.reviveCommand(source, target)
     end
 
     tes3mp.SendMessage(source, "Reviving Player", false)
-    core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.ADD)
+    core.functions.sendSpell(source, "burden_enable", enumerations.spellbook.ADD)
     core.functions.wait(10)
     core.functions.changeDeathStatus(tDbId)
     core.isDead[target] = not core.isDead[target]
-    core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.REMOVE)
+    core.functions.sendSpell(source, "burden_enable", enumerations.spellbook.REMOVE)
 end
 
 function core.OnServerPostInit()
