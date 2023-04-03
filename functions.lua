@@ -1,5 +1,13 @@
 ---@class functions
+---@field coolDowns table
 local functions = {}
+
+---@param seconds integer The amount of seconds you wish to hold the script by
+function functions.wait(seconds)
+    local clock = os.clock
+    local t0 = clock()
+    while clock() - t0 <= seconds do end
+end
 
 ---@func log message to console
 ---@param message string The message that is sent to log
@@ -88,6 +96,31 @@ function functions.getBalance(dbid)
         for _, player in pairs(Table) do
             if player.dbid == dbid then
                 return player.money
+            end
+        end
+    end
+end
+
+---@param dbid integer
+function functions.changeDeathStatus(dbid)
+    local playerTable = HebiDB.Table
+    for _, Table in pairs(playerTable) do
+        for _, player in pairs(Table) do
+            if player.dbid == dbid then
+                player.isDead = not player.isDead
+            end
+        end
+    end
+end
+
+---@param dbid integer
+---@return boolean IsDead?
+function functions.getDeathStatus(dbid)
+    local playerTable = HebiDB.Table
+    for _, Table in pairs(playerTable) do
+        for _, player in pairs(Table) do
+            if player.dbid == dbid then
+                return player.isDead
             end
         end
     end
@@ -200,6 +233,13 @@ function functions.createBurdenSpell(name, magnitude)
 		}
 	}
 	recordStore:Save()
+end
+
+function functions.coolDown(pid, time)
+    local sysTime = os.time()
+    if functions.coolDowns[pid] and sysTime - functions.coolDowns[pid] < time then return true end
+    functions.coolDowns[pid] = time
+    return false
 end
 
 ---@param pid integer PlayerID

@@ -1,4 +1,5 @@
 ---@class core
+---@field isDead table
 local core = {}
 
 core.functions = require 'custom.resdaynCore.functions'
@@ -57,12 +58,35 @@ function core.giveMoney(source, target, amount)
     core.functions.addMoney(target, amount)
 end
 
+--- Death Handler - We want a basic medical system. Keep Player in Place Until Revive.
+---@param eventStatus table
+---@param pid integer Player ID
+function core.onPlayerDeath(eventStatus, pid)
+    local dbId = core.functions.getDbID(Players[pid].name)
+    if not dbId then return end
+
+    core.isDead[pid] = true
+    core.functions.changeDeathStatus(dbId)
+    
+    ResdaynCore.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.ADD)
+    repeat
+        core.functions.wait(0)
+    until not core.isDead[pid] or not core.functions.coolDown(pid, 30)
+    ResdaynCore.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.REMOVE)
+end
+
+function core.OnServerPostInit()
+    ResdaynCore.functions.createBurdenSpell("Dead", 900)
+end
+
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 customCommandHooks.registerCommand("givemoney", core.giveMoney)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
 customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)
+customEventHooks.registerValidator("OnPlayerDeath", core.onPlayerDeath)
 
+customEventHooks.registerHandler("OnServerPostInit", core.OnServerPostInit)
 customEventHooks.registerHandler("OnPlayerFinishLogin", core.onLogin)
 customEventHooks.registerHandler("OnPlayerDisconnect", core.onDisconnect)
 
