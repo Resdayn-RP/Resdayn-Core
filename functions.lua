@@ -36,9 +36,9 @@ function functions.getClosestPlayer(source)
     local closestPid, closestCoords
     for pid in pairs(Players) do
         if pid ~= source then
-            closestCoords = functions.getPlayerCoords(pid)
-            if functions.getDistanceBetweenCoords(sourceCoords, pid) < closestCoords or not closestCoords then
+            if functions.getDistanceBetweenCoords(functions.getPlayerCoords(pid), sourceCoords) < closestCoords or not closestCoords then
                 closestPid = pid
+                closestCoords = functions.getPlayerCoords(pid)
             end
         end
     end
