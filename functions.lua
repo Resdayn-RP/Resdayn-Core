@@ -40,7 +40,7 @@ end
 
 function functions.checkMedicStatus(id)
     local playerTables = HebiDB:getTable()
-    for _, Table in pairs(playeTable) do
+    for _, Table in pairs(playerTables) do
         for _, player in pairs(Table) do
             if player.dbid == id then
                 return player.isMedic
