@@ -38,11 +38,14 @@ function functions.generateDbID()
     return id
 end
 
-function functions.checkMedicStatus(id)
+---Check if person is a medic
+---@param dbId integer DatabaseID
+---@return boolean isMedic
+function functions.checkMedicStatus(dbId)
     local playerTables = HebiDB:getTable()
     for _, Table in pairs(playerTables) do
         for _, player in pairs(Table) do
-            if player.dbid == id then
+            if player.dbid == dbId then
                 return player.isMedic
             end
         end
@@ -76,7 +79,7 @@ end
 ---@param dbid integer
 ---@param amount integer
 function functions.addMoney(dbid, amount)
-    local playerTable = HebiDB.Table
+    local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
@@ -89,7 +92,7 @@ end
 ---@param dbid integer
 ---@param amount integer
 function functions.removeMoney(dbid, amount)
-    local playerTable = HebiDB.Table
+    local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
@@ -102,7 +105,7 @@ end
 ---@param dbid integer
 ---@return integer player.money
 function functions.getBalance(dbid)
-    local playerTable = HebiDB.Table
+    local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
@@ -114,7 +117,7 @@ end
 
 ---@param dbid integer
 function functions.changeDeathStatus(dbid)
-    local playerTable = HebiDB.Table
+    local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
@@ -127,7 +130,7 @@ end
 ---@param dbid integer
 ---@return boolean IsDead?
 function functions.getDeathStatus(dbid)
-    local playerTable = HebiDB.Table
+    local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
