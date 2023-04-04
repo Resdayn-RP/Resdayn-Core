@@ -79,7 +79,7 @@ end
 ---@param dbid integer
 ---@param amount integer
 function functions.addMoney(dbid, amount)
-    local playerTable = HebiDB:getTable()
+    local playerTable = HebiDB.Table
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
@@ -92,7 +92,7 @@ end
 ---@param dbid integer
 ---@param amount integer
 function functions.removeMoney(dbid, amount)
-    local playerTable = HebiDB:getTable()
+    local playerTable = HebiDB.Table
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
@@ -117,7 +117,7 @@ end
 
 ---@param dbid integer
 function functions.changeDeathStatus(dbid)
-    local playerTable = HebiDB:getTable()
+    local playerTable = HebiDB.Table
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
