@@ -20,7 +20,6 @@ end
 ---@param eventStatus table Unused but necessary
 function core.onLogin(eventStatus, pid)
     if core.functions.getDbID(Players[pid].name) then return end
-    if core.config.logsEnabled then core.functions.log("Player Entry Not Found, Creating Player") end
     core.setupNewPlayer(pid)
 end
 
