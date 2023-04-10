@@ -7,6 +7,7 @@ tableConfig['players'] = {
         money = nil,
         isDead = false,
         isMedic = false,
+        factionId = nil,
         spells = {}
 }
 

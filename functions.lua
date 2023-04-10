@@ -19,14 +19,7 @@ end
 ---@param pid integer
 ---@return table playerCoords
 function functions.getPlayerCoords(pid)
-    return {x = tes3mp.GetPosX(pid), y = tes3mp.GetPosY(pid), z = tes3mp.GetPosZ(pid)}
-end
-
----@param pos1 table
----@param pos2 table
----@return integer displacement
-function functions.getDistanceBetweenCoords(pos1, pos2)
-    return math.sqrt((pos1.x - pos2.x)^2 + (pos1.y - pos2.y)^2 + (pos1.z - pos2.z)^2)
+    return vec3(tes3mp.GetPosX(pid), tes3mp.GetPosY(pid), tes3mp.GetPosZ(pid))
 end
 
 ---@return integer
