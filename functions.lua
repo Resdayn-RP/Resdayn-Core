@@ -22,6 +22,15 @@ function functions.getPlayerCoords(pid)
     return vec3(tes3mp.GetPosX(pid), tes3mp.GetPosY(pid), tes3mp.GetPosZ(pid))
 end
 
+---@param pid number PlayerId
+---@return boolean isOnline
+function functions.isPlayerOnline(pid)
+    for key in pairs(Players) do
+        if key == pid then return true end
+    end
+    return false
+end
+
 ---@return integer
 function functions.generateDbID()
     local id = math.random(0, 999)
@@ -58,15 +67,16 @@ function functions.checkForUniqueID(id)
 end
 
 ---@param name string
----@return integer|nil dbid
+---@return integer|boolean dbid
 function functions.getDbID(name)
+    if not name then return false end
     local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.name == name then return player.dbid end
         end
     end
-    return nil
+    return false
 end     
 
 ---@param dbid integer

@@ -82,17 +82,19 @@ function core.onPlayerDeath(eventStatus, pid)
 end
 
 function core.reviveCommand(pid, target)
-    local sDbId = core.functions.getDbID(Players[pid].name)
-    --local tDbId = core.functions.getDbID(Players[target].name) or 0
-    local tDbId
-
-    if not (sDbId and tDbId) then
+    if not target[2] then return end
+    
+    target = tonumber(target[2])
+    if not core.functions.isPlayerOnline(target) or target == pid or target < 1 then
         tes3mp.SendMessage(pid, "Could not find player(s). \n", false)
         return
     end
+    
+    local sDbId = core.functions.getDbID(Players[pid].name)
+    local tDbId = core.functions.getDbID(Players[target].name)
 
     if #(core.functions.getPlayerCoords(pid) - core.functions.getPlayerCoords(target)) > 1 then
-        tes3mp.SendMessage(pid, "You are not close enough to revive. \n")
+        tes3mp.SendMessage(pid, "You are not close enough to revive. \n", false)
         return
     end
 
