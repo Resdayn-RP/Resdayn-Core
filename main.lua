@@ -121,8 +121,6 @@ function core.checkPlayerJob(pid, cmd)
   local playerName = tes3mp.GetName(cmd[2])
   local dbId = core.functions.getDbId(cmd[2])
 
-  -- Command was used correctly by a player with the appropriate rank
-  -- Arg 1 is likely incorrect?
   requestedFactionStatus = functions.checkJob(dbId)
 
   local message = playerName
