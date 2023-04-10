@@ -54,15 +54,17 @@ function functions.generateDbID()
     return id
 end
 
----Check if person is a medic
+---Check if person is a member of the given faction
 ---@param dbId integer DatabaseID
----@return boolean isMedic
-function functions.checkMedicStatus(dbId)
+---@param faction string representing requested faction
+---@return boolean indicating faction membership
+function functions.checkFactionStatus(dbId, faction)
     local playerTables = HebiDB:getTable()
+    local factionRequested = "is" .. faction:gsub("^%l", string.upper)
     for _, Table in pairs(playerTables) do
         for _, player in pairs(Table) do
             if player.dbid == dbId then
-                return player.isMedic
+	      return player[factionRequested] or false
             end
         end
     end
