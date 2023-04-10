@@ -31,6 +31,22 @@ function functions.isPlayerOnline(pid)
     return false
 end
 
+---@param source integer Source Player ID
+---@return integer closestPid closest player's ID
+function functions.getClosestPlayer(source)
+    local sourceCoords = functions.getPlayerCoords(source)
+    local closestPid, closestCoords
+    for pid in pairs(Players) do
+        if pid ~= source then
+            if functions.getDistanceBetweenCoords(functions.getPlayerCoords(pid), sourceCoords) < closestCoords or not closestCoords then
+                closestPid = pid
+                closestCoords = functions.getPlayerCoords(pid)
+            end
+        end
+    end
+    return closestPid
+end
+
 ---@return integer
 function functions.generateDbID()
     local id = math.random(0, 999)
