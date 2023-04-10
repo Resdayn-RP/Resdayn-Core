@@ -110,9 +110,38 @@ function core.OnServerPostInit()
     core.functions.createBurdenSpell("Dead", 900)
 end
 
+---@param pid Player invoking the command
+---@param cmd command requested to execute
+function core.checkPlayerFaction(pid, cmd)
+-- faction PLAYER FACTION
+  local playerRank = Players[pid].data.settings.staffRank
+
+  -- Should add some logging here to state you're not proper rank
+  if playerRank == 0 then return end
+
+  if not cmd[2] or not cmd[3] then
+    -- Print: "Missing arguments, please use /faction PID/NAME FACTIONNAME"
+    return
+  end
+  local message = cmd[2] .. " is "
+
+  -- Command was used correctly by a player with the appropriate rank
+  -- Arg 1 is likely incorrect?
+  requestedFactionStatus = functions.checkFactionStatus(cmd[2], cmd[3])
+
+  if not requestedFactionStatus then
+    message = message .. " not "
+  end
+
+  message = message .. " a member of " .. cmd[3]
+
+  tes3mp.SendMessage(pid, message)
+end
+
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 customCommandHooks.registerCommand("givemoney", core.giveMoney)
 customCommandHooks.registerCommand("revive", core.reviveCommand)
+customCommandHooks.registerCommand("faction", core.checkPlayerFaction)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
 customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)
