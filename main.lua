@@ -112,7 +112,7 @@ end
 
 ---@param pid integer Player invoking the command
 ---@param cmd string command requested referring to a specific PID
-function core.checkPlayerFaction(pid, cmd)
+function core.checkPlayerJob(pid, cmd)
 
   if Players[pid].data.settings.staffRank == 0 then return end
 
