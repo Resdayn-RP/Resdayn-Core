@@ -16,4 +16,4 @@ local config = {}
 
 config.logsEnabled = true
 
-return tableConfig, config 
+return tableConfig, config
