@@ -111,32 +111,36 @@ function core.OnServerPostInit()
 end
 
 ---@param pid integer Player invoking the command
----@param cmd string command requested to execute as: dbId, job
+---@param cmd string command requested referring to a specific PID
 function core.checkPlayerFaction(pid, cmd)
 
   if Players[pid].data.settings.staffRank == 0 then return end
 
-  if not cmd[2] or not cmd[3] then return end
+  if not cmd[2] then return end
+
+  local playerName = tes3mp.GetName(cmd[2])
+  local dbId = core.functions.getDbId(cmd[2])
 
   -- Command was used correctly by a player with the appropriate rank
   -- Arg 1 is likely incorrect?
-  requestedFactionStatus = functions.checkJob(cmd[2], cmd[3])
+  requestedFactionStatus = functions.checkJob(dbId)
 
-  local message = cmd[2] .. " is "
+  local message = playerName
 
-  if not requestedFactionStatus then
-    message = message .. " not "
+  if requestedFactionStatus == nil then
+    message = message .. " has no job."
+  else
+    message = message .. "'s current job is " .. requestedFactionStatus
   end
 
-  message = message .. " a member of " .. cmd[3]
-
   tes3mp.SendMessage(pid, message)
+
 end
 
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 customCommandHooks.registerCommand("givemoney", core.giveMoney)
 customCommandHooks.registerCommand("revive", core.reviveCommand)
-customCommandHooks.registerCommand("faction", core.checkPlayerFaction)
+customCommandHooks.registerCommand("job", core.checkPlayerFaction)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
 customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)
