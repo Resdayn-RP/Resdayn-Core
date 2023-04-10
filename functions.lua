@@ -56,15 +56,13 @@ end
 
 ---Check if person is a member of the given faction
 ---@param dbId integer DatabaseID
----@param faction string representing requested faction
----@return boolean indicating faction membership
-function functions.checkFactionStatus(dbId, faction)
+---@return string indicating role or nil
+function functions.checkJob(dbId)
     local playerTables = HebiDB:getTable()
-    local factionRequested = "is" .. faction:gsub("^%l", string.upper)
     for _, Table in pairs(playerTables) do
         for _, player in pairs(Table) do
             if player.dbid == dbId then
-	      return player[factionRequested] or false
+	      return player.job
             end
         end
     end

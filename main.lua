@@ -111,7 +111,7 @@ function core.OnServerPostInit()
 end
 
 ---@param pid integer Player invoking the command
----@param cmd string command requested to execute
+---@param cmd string command requested to execute as: dbId, job
 function core.checkPlayerFaction(pid, cmd)
 
   if Players[pid].data.settings.staffRank == 0 then return end
@@ -120,7 +120,7 @@ function core.checkPlayerFaction(pid, cmd)
 
   -- Command was used correctly by a player with the appropriate rank
   -- Arg 1 is likely incorrect?
-  requestedFactionStatus = functions.checkFactionStatus(cmd[2], cmd[3])
+  requestedFactionStatus = functions.checkJob(cmd[2], cmd[3])
 
   local message = cmd[2] .. " is "
 
