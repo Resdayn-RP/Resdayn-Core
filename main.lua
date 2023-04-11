@@ -110,9 +110,35 @@ function core.OnServerPostInit()
     core.functions.createBurdenSpell("Dead", 900)
 end
 
+---@param pid integer Player invoking the command
+---@param cmd string command requested referring to a specific PID
+function core.checkPlayerJob(pid, cmd)
+
+  if Players[pid].data.settings.staffRank == 0 then return end
+
+  if not cmd[2] then return end
+
+  local playerName = tes3mp.GetName(cmd[2])
+  local dbId = core.functions.getDbId(cmd[2])
+
+  requestedFactionStatus = functions.checkJob(dbId)
+
+  local message = playerName
+
+  if not requestedFactionStatus then
+    message = message .. " has no job."
+  else
+    message = message .. "'s current job is " .. requestedFactionStatus
+  end
+
+  tes3mp.SendMessage(pid, message)
+
+end
+
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 customCommandHooks.registerCommand("givemoney", core.giveMoney)
 customCommandHooks.registerCommand("revive", core.reviveCommand)
+customCommandHooks.registerCommand("job", core.checkPlayerFaction)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
 customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)

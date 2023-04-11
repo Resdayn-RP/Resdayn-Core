@@ -54,15 +54,15 @@ function functions.generateDbID()
     return id
 end
 
----Check if person is a medic
+---Check if person is a member of the given faction
 ---@param dbId integer DatabaseID
----@return boolean isMedic
-function functions.checkMedicStatus(dbId)
+---@return string indicating role or nil
+function functions.checkJob(dbId)
     local playerTables = HebiDB:getTable()
     for _, Table in pairs(playerTables) do
         for _, player in pairs(Table) do
             if player.dbid == dbId then
-                return player.isMedic
+	      return player.job
             end
         end
     end
@@ -90,7 +90,7 @@ function functions.getDbID(name)
         end
     end
     return nil
-end     
+end
 
 ---@param dbid integer
 ---@param amount integer
@@ -169,17 +169,17 @@ end
 ---@param objects table
 function functions.disableTradersTrainers(eventStatus, pid, cellDescription, objects)
     if not (Players[pid] or Players[pid]:IsLoggedIn()) then return end
-    
+
     local ObjectIndex
     local ObjectRefid
-    local ObjectDialogue 
+    local ObjectDialogue
 
     for _, object in pairs(objects) do
         ObjectIndex = object.uniqueIndex
         ObjectRefid = object.refId
         ObjectDialogue = object.dialogueChoiceType
     end
-        
+
     if not (ObjectIndex and ObjectRefid) then return end
     if ObjectDialogue ~= 8 and ObjectDialogue ~= 3 then return end
 
@@ -191,7 +191,7 @@ end
 ---@return boolean didChange
 function functions.checkForSpellStackingChanges(eventStatus, playerPacket)
     local didChange = false
-    
+
     if eventStatus.validDefaultHandler then return false end
 
     for spellId, spellInstances in pairs(playerPacket.spellsActive) do
