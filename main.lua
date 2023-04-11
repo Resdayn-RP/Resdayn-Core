@@ -125,7 +125,7 @@ function core.checkPlayerJob(pid, cmd)
 
   local message = playerName
 
-  if requestedFactionStatus == nil then
+  if not requestedFactionStatus then
     message = message .. " has no job."
   else
     message = message .. "'s current job is " .. requestedFactionStatus
