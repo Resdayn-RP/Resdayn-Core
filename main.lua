@@ -11,7 +11,7 @@ function core.setupNewPlayer(pid)
     player.dbid = core.functions.generateDbID()
     player.money = 500
     player.isDead = false
-    player.isMedic = false
+    player.job = ""
     player.name = Players[pid].name
     HebiDB:insertToTable('players', { player })
 end
@@ -118,32 +118,35 @@ end
 ---@param pid integer Player invoking the command
 ---@param cmd string command requested referring to a specific PID
 function core.checkPlayerJob(pid, cmd)
-
-  if Players[pid].data.settings.staffRank == 0 then return end
-
+  if Players[pid].data.settings.staffRank < 1 then return end
   if not cmd[2] then return end
 
-  local playerName = tes3mp.GetName(cmd[2])
-  local dbId = core.functions.getDbId(cmd[2])
+  if not Players[tonumber(cmd[2])] then
+    tes3mp.SendMessage(pid, "Player not found.\n")
+    return
+  end
 
-  requestedFactionStatus = functions.checkJob(dbId)
+  local playerName = Players[tonumber(cmd[2])].name
+  local dbId = core.functions.getDbID(playerName)
+
+  requestedFactionStatus = core.functions.checkJob(dbId)
 
   local message = playerName
 
-  if not requestedFactionStatus then
-    message = message .. " has no job."
+  if requestedFactionStatus == "" then
+    message = message .. " has no job.\n"
   else
-    message = message .. "'s current job is " .. requestedFactionStatus
+    message = message .. "'s current job is " .. requestedFactionStatus .. "\n"
   end
 
-  tes3mp.SendMessage(pid, message)
+  tes3mp.SendMessage(pid, message, false)
 
 end
 
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 customCommandHooks.registerCommand("givemoney", core.giveMoney)
 customCommandHooks.registerCommand("revive", core.reviveCommand)
-customCommandHooks.registerCommand("job", core.checkPlayerFaction)
+customCommandHooks.registerCommand("job", core.checkPlayerJob)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
 customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)
