@@ -64,7 +64,7 @@ function functions.checkJob(dbId)
     for _, Table in pairs(playerTables) do
         for _, player in pairs(Table) do
             if player.dbid == dbId then
-	      return player.job
+	            return player.job
             end
         end
     end
