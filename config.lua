@@ -6,8 +6,7 @@ tableConfig['players'] = {
         dbid = nil,
         money = nil,
         isDead = false,
-        isMedic = false,
-        factionId = nil,
+        job = nil,
         spells = {}
 }
 
@@ -16,4 +15,4 @@ local config = {}
 
 config.logsEnabled = true
 
-return tableConfig, config 
+return tableConfig, config
