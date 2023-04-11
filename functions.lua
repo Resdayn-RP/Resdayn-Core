@@ -19,14 +19,16 @@ end
 ---@param pid integer
 ---@return table playerCoords
 function functions.getPlayerCoords(pid)
-    return {x = tes3mp.GetPosX(pid), y = tes3mp.GetPosY(pid), z = tes3mp.GetPosZ(pid)}
+    return vec3(tes3mp.GetPosX(pid), tes3mp.GetPosY(pid), tes3mp.GetPosZ(pid))
 end
 
----@param pos1 table
----@param pos2 table
----@return integer displacement
-function functions.getDistanceBetweenCoords(pos1, pos2)
-    return math.sqrt((pos1.x - pos2.x)^2 + (pos1.y - pos2.y)^2 + (pos1.z - pos2.z)^2)
+---@param pid number PlayerId
+---@return boolean isOnline
+function functions.isPlayerOnline(pid)
+    for key in pairs(Players) do
+        if key == pid then return true end
+    end
+    return false
 end
 
 ---@param source integer Source Player ID
@@ -81,8 +83,9 @@ function functions.checkForUniqueID(id)
 end
 
 ---@param name string
----@return integer|nil dbid
+---@return integer|boolean dbid
 function functions.getDbID(name)
+    if not name then return false end
     local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
@@ -95,7 +98,7 @@ end
 ---@param dbid integer
 ---@param amount integer
 function functions.addMoney(dbid, amount)
-    local playerTable = HebiDB.Table
+    local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
@@ -108,7 +111,7 @@ end
 ---@param dbid integer
 ---@param amount integer
 function functions.removeMoney(dbid, amount)
-    local playerTable = HebiDB.Table
+    local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then
@@ -133,7 +136,7 @@ end
 
 ---@param dbid integer
 function functions.changeDeathStatus(dbid)
-    local playerTable = HebiDB.Table
+    local playerTable = HebiDB:getTable()
     for _, Table in pairs(playerTable) do
         for _, player in pairs(Table) do
             if player.dbid == dbid then

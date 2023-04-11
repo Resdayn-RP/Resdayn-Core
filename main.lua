@@ -20,7 +20,6 @@ end
 ---@param eventStatus table Unused but necessary
 function core.onLogin(eventStatus, pid)
     if core.functions.getDbID(Players[pid].name) then return end
-    if core.config.logsEnabled then core.functions.log("Player Entry Not Found, Creating Player") end
     core.setupNewPlayer(pid)
 end
 
@@ -51,7 +50,7 @@ function core.giveMoney(source, target, amount)
     end
     
     local sCoords, tCoords = core.functions.getPlayerCoords(source), core.functions.getPlayerCoords(target)
-    if core.functions.getDistanceBetweenCoords(sCoords, tCoords) < 10 then
+    if #(sCoords - tCoords) < 10 then
         tes3mp.SendMessage(source, "Too far from target player.", false)
         return
     end
@@ -82,28 +81,34 @@ function core.onPlayerDeath(eventStatus, pid)
     core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.REMOVE)
 end
 
----@param source integer Source player ID
----@param target integer Target player ID
-function core.reviveCommand(source, target)
-    local sDbId = core.functions.getDbID(Players[source].name)
-    local tDbId = core.functions.getDbID(Players[target].name)
+function core.reviveCommand(pid, target)
+    if not target[2] then return end
     
-    if not (sDbId or tDbId) then
-        tes3mp.SendMessage(source, "Could not find player(s).", false)
+    target = tonumber(target[2])
+    if not core.functions.isPlayerOnline(target) or target == pid or target < 1 then
+        tes3mp.SendMessage(pid, "Could not find player(s). \n", false)
+        return
+    end
+    
+    local sDbId = core.functions.getDbID(Players[pid].name)
+    local tDbId = core.functions.getDbID(Players[target].name)
+
+    if #(core.functions.getPlayerCoords(pid) - core.functions.getPlayerCoords(target)) > 1 then
+        tes3mp.SendMessage(pid, "You are not close enough to revive. \n", false)
         return
     end
 
     if not core.functions.checkMedicStatus(sDbId) then
-        tes3mp.SendMessage(source, "You are not a medic.", false)
+        tes3mp.SendMessage(pid, "You are not a medic. \n", false)
         return
     end
 
-    tes3mp.SendMessage(source, "Reviving Player", false)
-    core.functions.sendSpell(source, "burden_enable", enumerations.spellbook.ADD)
+    tes3mp.SendMessage(pid, "Reviving Player \n", false)
+    core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.ADD)
     core.functions.wait(10)
     core.functions.changeDeathStatus(tDbId)
     core.isDead[target] = not core.isDead[target]
-    core.functions.sendSpell(source, "burden_enable", enumerations.spellbook.REMOVE)
+    core.functions.sendSpell(pid, "burden_enable", enumerations.spellbook.REMOVE)
 end
 
 function core.OnServerPostInit()
