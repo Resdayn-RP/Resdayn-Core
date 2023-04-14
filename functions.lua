@@ -17,7 +17,7 @@ function functions.log(message)
 end
 
 ---@param pid integer
----@return table playerCoords
+---@return vector3 playerCoords
 function functions.getPlayerCoords(pid)
     return vec3(tes3mp.GetPosX(pid), tes3mp.GetPosY(pid), tes3mp.GetPosZ(pid))
 end

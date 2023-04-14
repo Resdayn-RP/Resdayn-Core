@@ -143,10 +143,15 @@ function core.checkPlayerJob(pid, cmd)
 
 end
 
+function core.playerCoordsCommand(pid)
+    tes3mp.SendMessage(pid, tostring(core.functions.getPlayerCoords(pid)) .. '\n', false)
+end
+
 customCommandHooks.registerCommand("cash", core.moneyCommand)
 customCommandHooks.registerCommand("givemoney", core.giveMoney)
 customCommandHooks.registerCommand("revive", core.reviveCommand)
 customCommandHooks.registerCommand("job", core.checkPlayerJob)
+customCommandHooks.registerCommand("coords", core.playerCoordsCommand)
 
 customEventHooks.registerValidator("OnObjectDialogueChoice", core.functions.disableTradersTrainers)
 customEventHooks.registerValidator("OnPlayerSpellsActive", core.functions.disableDuplicateMagicEffects)
