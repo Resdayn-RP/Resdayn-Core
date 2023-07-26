@@ -39,24 +39,23 @@ function core.moneyCommand(pid)
 end
 
 
----@param source integer Player ID
----@param target integer Target Player ID
----@param amount number Amount of money to transfer
-function core.giveMoney(source, target, amount)
-    local sourceDbId, targetDbId = core.functions.getDbId(Players[source].name), core.functions(Players[target].name)
+---@param pid integer Player ID
+---@param cmd table
+function core.giveMoney(pid, cmd)
+    local sourceDbId, targetDbId = core.functions.getDbId(Players[pid].name), core.functions(Players[cmd[2]].name)
     if not (sourceDbId or targetDbId) then
-        tes3mp.SendMessage(source, "Can't find players.", false)
+        tes3mp.SendMessage(pid, "Can't find players.", false)
         return
     end
     
-    local sCoords, tCoords = core.functions.getPlayerCoords(source), core.functions.getPlayerCoords(target)
-    if #(sCoords - tCoords) < 10 then
-        tes3mp.SendMessage(source, "Too far from target player.", false)
+    local sCoords, tCoords = core.functions.getPlayerCoords(pid), core.functions.getPlayerCoords(cmd[2])
+    if -(sCoords - tCoords) < 10 then
+        tes3mp.SendMessage(pid, "Too far from target player.", false)
         return
     end
 
-    core.functions.removeMoney(source, amount)
-    core.functions.addMoney(target, amount)
+    core.functions.removeMoney(pid, cmd[3])
+    core.functions.addMoney(cmd[2], cmd[3])
 end
 
 function core.deathEventValidator(eventStatus, pid)
@@ -85,7 +84,7 @@ function core.reviveCommand(pid, target)
     if not target[2] then return end
     
     target = tonumber(target[2])
-    if not core.functions.isPlayerOnline(target) or target == pid or target < 1 then
+    if not core.functions.isPlayerOnline(target) or target == pid or target < 0 then
         tes3mp.SendMessage(pid, "Could not find player(s). \n", false)
         return
     end
@@ -93,7 +92,7 @@ function core.reviveCommand(pid, target)
     local sDbId = core.functions.getDbID(Players[pid].name)
     local tDbId = core.functions.getDbID(Players[target].name)
 
-    if #(core.functions.getPlayerCoords(pid) - core.functions.getPlayerCoords(target)) > 1 then
+    if -(core.functions.getPlayerCoords(pid) - core.functions.getPlayerCoords(target)) > 1 then
         tes3mp.SendMessage(pid, "You are not close enough to revive. \n", false)
         return
     end

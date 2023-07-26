@@ -243,6 +243,16 @@ function functions.addItem(player, refId, amount)
     player:QuicksaveToDrive()
 end
 
+---@param player table
+---@param refId string
+---@param amount integer
+function functions.removeItem(player, refId, amount)
+    inventoryHelper.removeItem(player.data.inventory, refId, amount, -1, -1, "")
+    player:LoadInventory()
+    player:LoadEquipment()
+    player:QuicksaveToDrive()
+end
+
 ---@param name string
 ---@param magnitude integer size of burden
 function functions.createBurdenSpell(name, magnitude)
